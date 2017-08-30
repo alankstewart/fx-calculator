@@ -13,7 +13,7 @@ public class PairsTest {
 
     @BeforeClass
     public static void onlyOnce() throws Exception {
-        pairs = new FxCalculator().readPairsData();
+        pairs = new Pairs(new FxCalculator().readPairsData());
     }
 
     @Test

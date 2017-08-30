@@ -20,28 +20,28 @@ public class FxCalculator {
     public static void main(String args[]) {
         System.out.println("FX Calculator\n");
         FxCalculator calc = new FxCalculator();
-        calc.convertCurrency();
+        calc.convertCurrencyAmount();
     }
 
-    private void convertCurrency() {
+    private void convertCurrencyAmount() {
         usage();
         try {
-            Pairs pairs = readPairsData();
-            Map<String, Integer> currencyData = readCurrencyData();
+            final Pairs pairs = new Pairs(readPairsData());
+            final Map<String, Integer> currencyData = readCurrencyData();
             final Pattern p = Pattern.compile("(^[A-Z]{3}) ([0-9]+)(\\.[0-9]+)? in ([A-Z]{3}$)");
-            Scanner scanner = new Scanner(System.in);
+            final Scanner scanner = new Scanner(System.in);
             while (true) {
-                String line = scanner.nextLine();
+                final String line = scanner.nextLine();
                 if ("q".equals(line) || "quit".equals(line)) {
                     break;
                 }
 
-                Matcher m = p.matcher(line);
+                final Matcher m = p.matcher(line);
                 if (m.matches()) {
-                    String base = m.group(1);
-                    BigDecimal amount = new BigDecimal(m.group(2) + Optional.ofNullable(m.group(3)).orElse(""));
-                    String terms = m.group(4);
-                    BigDecimal convertedAmount = pairs.getRate(base, terms)
+                    final String base = m.group(1);
+                    final BigDecimal amount = new BigDecimal(m.group(2) + Optional.ofNullable(m.group(3)).orElse(""));
+                    final String terms = m.group(4);
+                    final BigDecimal convertedAmount = pairs.getRate(base, terms)
                             .multiply(amount)
                             .setScale(currencyData.get(terms), RoundingMode.HALF_UP);
 
@@ -60,26 +60,27 @@ public class FxCalculator {
         System.out.println("       'q' or 'quit' to exit");
     }
 
-    Pairs readPairsData() throws URISyntaxException, IOException {
-        Map<String, BigDecimal> pairsRates = readFile("pairs_rates.dat")
+    Map<String, BigDecimal> readPairsData() {
+        return readFile("pairs_rates.dat")
                 .stream()
                 .map(l -> l.split("="))
                 .collect(toMap(p -> p[0], p -> new BigDecimal(p[1])));
-        return new Pairs(pairsRates);
     }
 
-    private Map<String, Integer> readCurrencyData() throws URISyntaxException, IOException {
+    private Map<String, Integer> readCurrencyData() {
         return readFile("currency.dat")
                 .stream()
                 .map(l -> l.split("="))
                 .collect(toMap(c -> c[0], c -> Integer.parseInt(c[1])));
     }
 
-    private List<String> readFile(String fileName) throws URISyntaxException, IOException {
-        URL resource = getClass().getClassLoader().getResource(fileName);
+    private List<String> readFile(final String fileName) {
+        final URL resource = getClass().getClassLoader().getResource(fileName);
         Objects.requireNonNull(resource, "Failed to load resource " + fileName);
         try (final Stream<String> lines = Files.lines(Paths.get(resource.toURI()))) {
             return lines.collect(toList());
+        } catch (IOException | URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }
