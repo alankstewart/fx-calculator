@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#----------------------------------------------------------------------
+# FX Calculator Startup Script
+#----------------------------------------------------------------------
+
+export CLASS_PATH=lib/'*'
+export CLASS_PATH=$CLASS_PATH:etc
+
+java -cp $CLASS_PATH alankstewart.fx.FxCalculator
