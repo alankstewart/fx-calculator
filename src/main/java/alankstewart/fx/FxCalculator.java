@@ -38,12 +38,13 @@ public class FxCalculator {
             if (m.matches()) {
                 final String base = m.group(1).toUpperCase();
                 final String terms = m.group(4).toUpperCase();
-                final BigDecimal amount = new BigDecimal(m.group(2) +
-                        Optional.ofNullable(m.group(3)).orElse(""));
                 try {
+                    final BigDecimal amount = new BigDecimal(m.group(2) +
+                            Optional.ofNullable(m.group(3)).orElse(""));
                     BigDecimal rate = currencyPairs.getRate(base, terms);
                     int precision = currencyData.get(terms);
                     final BigDecimal convertedAmount = rate.multiply(amount).setScale(precision, RoundingMode.HALF_UP);
+
                     System.out.printf("%s %s = %s %s\n", base, amount, terms, convertedAmount);
                 } catch (Exception e) {
                     System.err.printf("Unable to find rate for %s/%s\n", base, terms);
