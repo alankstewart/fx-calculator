@@ -41,7 +41,7 @@ public final class CurrencyPairs {
         final String side1 = findOppositeSide(base);
         final String side2 = findOppositeSide(terms);
 
-        if (side1.equals(side2)) {
+        if (Objects.equals(side1, side2)) {
             // Single cross (eg AUDCAD = AUDUSD then CADUSD)
             final BigDecimal a = getRateInternal(base, side1);
             final BigDecimal b = getRateInternal(side2, terms);
