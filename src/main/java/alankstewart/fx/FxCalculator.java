@@ -10,9 +10,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 public class FxCalculator {
@@ -39,7 +37,8 @@ public class FxCalculator {
                 final Matcher m = p.matcher(line);
                 if (m.matches()) {
                     final String base = m.group(1);
-                    final BigDecimal amount = new BigDecimal(m.group(2) + Optional.ofNullable(m.group(3)).orElse(""));
+                    final BigDecimal amount = new BigDecimal(m.group(2) +
+                            Optional.ofNullable(m.group(3)).orElse(""));
                     final String terms = m.group(4);
                     final BigDecimal convertedAmount = pairs.getRate(base, terms)
                             .multiply(amount)
@@ -63,22 +62,22 @@ public class FxCalculator {
     Map<String, BigDecimal> readPairsData() {
         return readFile("pairs_rates.dat")
                 .stream()
-                .map(l -> l.split("="))
+                .map(line -> line.split("="))
                 .collect(toMap(p -> p[0], p -> new BigDecimal(p[1])));
     }
 
     private Map<String, Integer> readCurrencyData() {
         return readFile("currency.dat")
                 .stream()
-                .map(l -> l.split("="))
+                .map(line -> line.split("="))
                 .collect(toMap(c -> c[0], c -> Integer.parseInt(c[1])));
     }
 
     private List<String> readFile(final String fileName) {
-        final URL resource = getClass().getClassLoader().getResource(fileName);
-        Objects.requireNonNull(resource, "Failed to load resource " + fileName);
-        try (final Stream<String> lines = Files.lines(Paths.get(resource.toURI()))) {
-            return lines.collect(toList());
+        try {
+            final URL resource = getClass().getClassLoader().getResource(fileName);
+            Objects.requireNonNull(resource, "Failed to load resource " + fileName);
+            return Files.readAllLines(Paths.get(resource.toURI()));
         } catch (IOException | URISyntaxException e) {
             throw new RuntimeException(e);
         }
