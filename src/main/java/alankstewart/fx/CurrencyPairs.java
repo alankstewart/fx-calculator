@@ -21,7 +21,7 @@ public final class CurrencyPairs {
             final BigDecimal rate = getRateInternal(base, terms);
             return rate.compareTo(BigDecimal.ZERO) == 0 ? getCrossCurrencyRate(base, terms) : rate;
         } catch (Exception e) {
-            throw new IllegalArgumentException(String.format("Unable to find rate for %s/%s", base, terms));
+            throw new IllegalArgumentException(String.format("Unable to find rate for %s/%s", base, terms), e);
         }
     }
 
@@ -65,6 +65,6 @@ public final class CurrencyPairs {
                 return pair.substring(0, 3);
             }
         }
-        throw new IllegalArgumentException("Unknown currency");
+        throw new IllegalArgumentException("Unknown currency " + currency);
     }
 }
