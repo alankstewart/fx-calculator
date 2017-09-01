@@ -41,19 +41,19 @@ public class CurrencyPairsTest {
     }
 
     @Test
-    public void shouldGetCrossCurrencyRate2() throws Exception {
-        BigDecimal rate = currencyPairs.getRate("AUD", "CZK");
-        assertTrue(rate.compareTo(new BigDecimal("18.7623")) == 0);
-    }
-
-    @Test
     public void shouldGetInvertedCrossCurrencyRate() throws Exception {
         BigDecimal rate = currencyPairs.getRate("JPY", "AUD");
         assertTrue(rate.compareTo(new BigDecimal("0.0099")) == 0);
     }
 
     @Test
-    public void shouldGetInvertedCrossCurrencyRate2() throws Exception {
+    public void shouldGetCrossCurrencyRateMultiCross() throws Exception {
+        BigDecimal rate = currencyPairs.getRate("AUD", "CZK");
+        assertTrue(rate.compareTo(new BigDecimal("18.7623")) == 0);
+    }
+
+    @Test
+    public void shouldGetInvertedCrossCurrencyRateMultiCross() throws Exception {
         BigDecimal rate = currencyPairs.getRate("NOK", "CAD");
         assertTrue(rate.compareTo(new BigDecimal("0.1631")) == 0);
     }
